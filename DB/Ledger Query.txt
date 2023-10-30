@@ -1,0 +1,53 @@
+
+alter procedure SP_CustomerLedger  
+@CustomerId int        
+        
+as      
+    
+create table #TempCusLedg  
+(      
+ LedgerID int,      
+ Date datetime,      
+ Particular nvarchar(100),      
+ BillNo nvarchar(50),      
+ CustomerId int,      
+ Debit int,      
+ Credit int,      
+ OpeningAmt int,      
+ Balance int      
+)  
+  
+insert into #TempCusLedg  
+select LedgerID,Date,Particular,BillNo,CustomerId,Debit,Credit,0,0  
+from Ledgers where CustomerId=@CustomerId order by Date,LedgerID  
+  
+update #TempCusLedg set OpeningAmt=(select OpeningBalance from Customers where CustomerId=@CustomerId)      
+  
+  
+DECLARE @SNo int, @ledgerID int, @Debit int, @Credit int, @OpenAmt int,   
+@RunningBal int = 0    
+  
+DECLARE MyCursor CURSOR FOR      
+  
+SELECT row_number() Over(Order by LedgerID) as SNo,LedgerID,Debit,Credit,OpeningAmt  
+FROM #TempCusLedg      
+Order by Date,ledgerID  
+    
+OPEN MyCursor      
+    
+FETCH NEXT FROM MyCursor INTO @SNo,@LedgerId,@Debit,@Credit,@OpenAmt        
+Set @RunningBal = @OpenAmt    
+   
+WHILE @@FETCH_STATUS = 0  
+BEGIN      
+ Set @RunningBal = (@RunningBal - @Debit) + @Credit    
+ update #TempCusLedg set Balance= @RunningBal where LedgerID=@LedgerId  
+ FETCH NEXT FROM MyCursor INTO @SNo,@LedgerId,@Debit,@Credit,@OpenAmt      
+END      
+    
+CLOSE MyCursor      
+DEALLOCATE MyCursor      
+      
+      
+select LedgerID,Date,Particular,BillNo,CustomerId,Debit,Credit,Balance,0 as isCheque,0 as isSeen from #TempCusLedg order by Date     
+drop table #TempCusLedg 
