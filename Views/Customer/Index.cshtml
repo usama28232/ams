@@ -1,0 +1,131 @@
+﻿@model IEnumerable<ams.Models.Customer>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Customers Index</h2>
+
+<div class="col-xs-12" style="padding:0;padding-bottom:30px;">
+    @Html.TextBox("txtName", "", new { placeholder = "Search by name" })
+    @Html.TextBox("txtContact", "", new { placeholder = "Search by number", style = "margin-left:20px" })
+</div>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contact)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr class="row-customer">
+        <td>
+            @Html.DisplayFor(modelItem => item.City)
+        </td>
+        <td class="filter-name">
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td class="filter-name">
+            @Html.DisplayFor(modelItem => item.Address)
+        </td>
+        <td class="filter-contact">
+            <span id="contact1">@Html.DisplayFor(modelItem => item.Contact)</span>
+            <span id="contact2" style="display:none;">@Html.DisplayFor(modelItem => item.Contact1)</span>
+            <span id="contact3" style="display:none;">@Html.DisplayFor(modelItem => item.Contact2)</span>
+            <span id="contact4" style="display:none;">@Html.DisplayFor(modelItem => item.Contact3)</span>
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.CustomerID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.CustomerID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.CustomerID }) |
+            @Html.ActionLink("View Ledger", "CustomerLedger", "Ledger", new { id=item.CustomerID }, null)
+        </td>
+    </tr>
+}
+
+</table>
+
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function ()
+        {
+            $('#txtName').change(function ()
+            {
+                if( $.trim($('#txtName').val()) != '')
+                {
+                    $('.row-customer').each(function ()
+                    {
+                        var value = $.trim($(this).find('.filter-name').text());
+                        var searchValue = $.trim($('#txtName').val());
+
+                        var re = new RegExp(searchValue, "ig");
+
+                        if ( value.match(re) )
+                            $(this).slideDown();
+                        else
+                            $(this).slideUp();
+                    });
+                }
+                else
+                {
+                    $('.row-customer').each(function () {
+                        $(this).slideDown();
+                    });
+                }
+            });
+
+            $('#txtContact').change(function ()
+            {
+                if ($.trim($('#txtContact').val()) != '')
+                {
+                    $('.row-customer').each(function () {
+                        var value = $.trim($(this).find('.filter-contact').find('#contact1').text());
+                        var value1 = $.trim($(this).find('.filter-contact').find('#contact2').text());
+                        var value2 = $.trim($(this).find('.filter-contact').find('#contact3').text());
+                        var value3 = $.trim($(this).find('.filter-contact').find('#contact4').text());
+                        var searchValue = $.trim($('#txtContact').val());
+
+                        var re = new RegExp(searchValue, "ig");
+
+                        if (value.match(re))
+                            $(this).slideDown();
+                        else if (value1.match(re))
+                            $(this).slideDown();
+                        else if (value2.match(re))
+                            $(this).slideDown();
+                        else if (value3.match(re))
+                            $(this).slideDown();
+                        else
+                            $(this).slideUp();
+                    });
+                }
+                else {
+                    $('.row-customer').each(function () {
+                        $(this).slideDown();
+                    });
+                }
+            });
+        });
+
+    </script>
+}

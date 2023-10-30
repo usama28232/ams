@@ -1,0 +1,67 @@
+﻿@model ams.Models.Ledger
+
+@{
+    ViewBag.Title = "Print Ledger";
+}
+
+<style>
+    .editor-field {
+        margin-bottom:10px;
+    }
+
+</style>
+
+@using (Html.BeginForm("CustomerLedger", "Reports", FormMethod.Get, null))
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset style="padding-left:10px;">
+        <legend>Print Ledger</legend>
+
+        <div class="editor-field">
+            @Html.HiddenFor(model => model.CustomerId, new { Value = ViewBag.Customerid })
+        </div>
+
+        <div class="editor-label">
+            <label>From Date:</label>
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("From", null, new { @Id = "FROM", @type="date", @Value=DateTime.Now.ToString("mm/dd/yyyy") })
+        </div>
+
+        <div class="editor-label">
+            <label>To Date:</label>
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("To", null, new { @Id = "TO", @type="date", @Value=DateTime.Now.ToString("mm/dd/yyyy") })
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function ()
+        {
+            var now = new Date("@DateTime.Now");
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('input#TO').val(today);
+
+            now = new Date("@DateTime.Now.AddMonths(-6)");
+            day = ("0" + now.getDate()).slice(-2);
+            month = ("0" + (now.getMonth() + 1)).slice(-2);
+            today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('input#FROM').val(today);
+        });
+    </script>
+}
+

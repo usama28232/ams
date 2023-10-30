@@ -1,0 +1,145 @@
+﻿@model ams.Models.Customer
+
+@{
+    ViewBag.Title = "Create New Customer";
+}
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Create New Customer</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            <span id="NameCheck" style="display:none;">Name Already Exists.</span>
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Address)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Address)
+            @Html.ValidationMessageFor(model => model.Address)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.City)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.City)
+            @Html.ValidationMessageFor(model => model.City)
+        </div>
+
+        <div class="editor-label">
+            <label>Contact #1</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Contact)
+            @Html.ValidationMessageFor(model => model.Contact)
+        </div>
+
+        <div class="editor-label">
+            <label>Contact #2</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Contact1)
+            @Html.ValidationMessageFor(model => model.Contact1)
+        </div>
+
+        <div class="editor-label">
+            <label>Contact #3</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Contact2)
+            @Html.ValidationMessageFor(model => model.Contact2)
+        </div>
+
+        <div class="editor-label">
+            <label>Contact #4</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Contact3)
+            @Html.ValidationMessageFor(model => model.Contact3)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AlertStatus)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("AlertStatus", new List<SelectListItem>{
+                new SelectListItem{ Text="On", Value = "1" },
+                new SelectListItem{ Text="Off", Value = "0" }
+             }) 
+        </div>
+
+        <div class="editor-label">
+            <label>Alert Days</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.AlertDays, new { @Value = "15" } )
+            @Html.ValidationMessageFor(model => model.AlertDays)
+        </div>
+        
+        <div class="editor-label">
+            <label>Opening Balance</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OpeningBalance)
+            @Html.ValidationMessageFor(model => model.OpeningBalance)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" id="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(document).ready(function ()
+        {
+            $('#AlertDays').val("15");
+            $('#OpeningBalance').val("0");
+
+            $('#Name').change(function () {
+                var name = $.trim($('#Name').val());
+                $(this).css('textTransform', 'capitalize');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Content("~/Customer/IsNameAvailble")',
+                    data: { _Name : name },
+                    success: function (data) {
+                        if (data === "Y") {
+                            console.log(data);
+                            console.log('y');
+                            $('#NameCheck').hide();
+                            $('#Create').removeAttr('disabled');
+                        } else {
+                            console.log('n');
+                            $('#NameCheck').show();
+                            $('#Create').attr('disabled', 'disabled');
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + ' ' + xhr.status);
+                    }
+                });
+            });
+
+        });
+
+    </script>
+}
+

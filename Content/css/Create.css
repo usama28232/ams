@@ -1,0 +1,40 @@
+﻿/* CSS Document */
+
+ .field-validation-error {
+    color:red;
+}
+
+ legend {
+    color:#900; 
+    margin-bottom:30px;
+}
+
+ #table {
+    margin-top:20px;
+    margin-bottom:30px;
+}
+ td {
+    padding:5px;
+    padding-left:10px;
+    background-color:#fcfcfc;
+}
+ .tbl-header {
+    background-color:#808080;
+}
+ .tbl-input-row {
+    background-color:#eeeeee;
+}
+ th {
+    color:#fefefe;
+}
+
+ .redLink {
+    color:red;
+}
+ .grey-back {
+    background-color:#eeeeee;
+}
+ #add {
+    margin-top:3px;
+    float:right;
+}

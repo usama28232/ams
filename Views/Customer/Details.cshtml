@@ -1,0 +1,134 @@
+﻿@model ams.Models.Customer
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<fieldset>
+    <legend style="padding-bottom:10px;color:#666;font-size:28px;">
+        <span class="pull-right">
+            @if(Model.AlertStatus == 0){
+                <a href="#" class="toggle-notifications btn btn-danger square-btn-adjust on">Turn On Notifications &nbsp;<i class="fa fa-bell-o"></i></a>
+            }else{
+                <a href="#" class="toggle-notifications btn btn-danger square-btn-adjust off">Turn Off Notifications &nbsp;<i class="fa fa-bell-slash-o"></i></a>
+            }
+        </span>
+        Customer
+    </legend>
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Address)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Address)
+    </div>
+    
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.City)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.City)
+    </div>
+
+    <div class="display-label">
+         <label>Contact #1</label>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Contact)
+    </div>
+
+    <div class="display-label">
+         <label>Contact #2</label>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Contact1)
+    </div>
+
+    <div class="display-label">
+         <label>Contact #3</label>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Contact2)
+    </div>
+
+    <div class="display-label">
+         <label>Contact #4</label>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Contact3)
+    </div>
+    
+    <div class="display-label">
+         <label>Alert Days</label>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AlertDays)
+    </div>
+    
+    <div class="display-label">
+         <label>Opening Balance</label>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OpeningBalance)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CustomerID }) |
+    @Html.ActionLink("Back to List", "Index") |
+    @Html.ActionLink("View Ledger", "CustomerLedger", "Ledger", new { id = Model.CustomerID }, null) | 
+    @Html.ActionLink("Print", "Customer", "Reports", new { id=Model.CustomerID }, null)
+</p>
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('a.toggle-notifications').click(function (e)
+            {
+                e.preventDefault();
+                var action = $(this).attr('class').split(' ').pop();
+                var url;
+                var processing = false;
+                switch (action) {
+                    case "on":
+                        $(this).removeClass("on");
+                        url = "@Url.Content("~/Customer/TurnOnNotifications")";
+                        $(this).addClass("off");
+                        $(this).html("Turn Off Notifications &nbsp;<i class='fa fa-bell-slash-o'></i>");
+                        break;
+                    case "off":
+                        $(this).removeClass("off");
+                        url = "@Url.Content("~/Customer/TurnOffNotifications")";
+                        $(this).addClass("on");
+                        $(this).html("Turn On Notifications &nbsp;<i class='fa fa-bell-o'></i>");
+                        break;
+                    default:
+                        url = '';
+                        break;
+                }
+                if (url != '' && !processing) {
+                    processing = true;
+                    // Ajax here..
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: { id:@Model.CustomerID },
+                        success: function (data) {
+                            processing = false;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(thrownError + ' ' + xhr.status);
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+}
+
