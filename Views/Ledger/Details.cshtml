@@ -1,0 +1,56 @@
+﻿@model ams.Models.Ledger
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Ledger</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Date)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BillNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BillNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Particular)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Particular)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Debit)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Debit)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Credit)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Credit)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Balance)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Balance)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

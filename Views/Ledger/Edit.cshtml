@@ -1,0 +1,94 @@
+﻿@model ams.Models.Ledger
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Ledger</legend>
+
+        @Html.HiddenFor(model => model.LedgerID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Date, new { Type="date", Id="Date"})
+            @Html.ValidationMessageFor(model => model.Date)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BillNo)
+        </div>
+
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BillNo)
+            @Html.ValidationMessageFor(model => model.BillNo)
+        </div>
+
+        <div class="editor-field">
+            @Html.HiddenFor(model => model.CustomerId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Particular)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Particular)
+            @Html.ValidationMessageFor(model => model.Particular)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Debit)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Debit)
+            @Html.ValidationMessageFor(model => model.Debit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Credit)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Credit)
+            @Html.ValidationMessageFor(model => model.Credit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.isCheque)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("isCheque", new List<SelectListItem>{
+                new SelectListItem{ Text="No", Value = "0" },
+                new SelectListItem{ Text="Yes", Value = "1" }
+             }) 
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+<div>
+    @Html.ActionLink("Back to List", "Index", "Customer")
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function ()
+        {
+            var now = new Date( "@Model.Date" );
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            $('input#Date').val(today);
+        });
+
+    </script>
+}

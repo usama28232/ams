@@ -1,0 +1,124 @@
+﻿@model IEnumerable<ams.Models.Customer>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 style="">Alert For Unpaid Customers</h2>
+
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contact)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.CheckBox("a", new { @id = item.CustomerID, @class = "chk" })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.City)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contact)
+        </td>
+        <td class="col-xs-2">
+            @Html.ActionLink("View Ledger","CustomerLedger/"+item.CustomerID,"Ledger")
+        </td>
+    </tr>
+}
+     
+</table>
+
+<p>
+    <input id="btnPrint" type="submit" value="Print" />
+    <input id="btnPending" type="submit" style="margin-left:5px;" value="Pending" />
+</p>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function ()
+        {
+            $('#btnPrint').click(function ()
+            {
+                var ids = new Array();
+                var cnt = 0;
+
+                $('.chk').each(function ()
+                {
+                    if ($(this).prop('checked'))
+                    {
+                        ids[cnt] = parseInt($(this).attr("id"));
+                        cnt++;
+                    }
+                });
+
+                var idsToSend = JSON.stringify(ids);
+
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'POST',
+                    url: '@Url.Content("~/Alerts/Print/")',
+                    data: idsToSend,
+                    dataType: "json",
+                    success: function (data) {
+                        window.location.replace("@Url.Content("~/Reports/CustomerAlerts")");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + ' ' + xhr.status);
+                    }
+                });
+            });
+
+            $('#btnPending').click(function ()
+            {
+                var ids = new Array();
+                var cnt = 0;
+
+                $('.chk').each(function ()
+                {
+                    if ($(this).prop('checked'))
+                    {
+                        ids[cnt] = parseInt($(this).attr("id"));
+                        cnt++;
+                    }
+                });
+
+                var idsToSend = JSON.stringify(ids);
+
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'POST',
+                    url: '@Url.Content("~/Alerts/Pending/")',
+                    data: idsToSend,
+                    dataType: "json",
+                    success: function (data) {
+                        window.location.replace("@Url.Content("~/Alerts/")");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + ' ' + xhr.status);
+                    }
+                });
+            });
+           
+        });
+
+    </script>
+}
+

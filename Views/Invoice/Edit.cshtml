@@ -1,0 +1,304 @@
+﻿@model ams.Models.Invoice
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+<link href="~/Content/css/Create.css" rel="stylesheet"/>
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet"/>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Invoice</legend>
+		
+        @Html.HiddenFor(model => model.InvoiceID, new { @id="fkey" })
+
+		<div class="col-md-12">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Date)
+            @Html.TextBoxFor(model => model.Date, new { @class="form-control", @id="datex"})
+            @Html.ValidationMessageFor(model => model.Date)
+        </div>
+		</div>
+
+        <div class="col-md-12">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.CSId, "Cus")
+            @Html.DropDownListFor(model => model.CSId,ams.Controllers.InvoiceController.GetCustomer(), new { @class="form-control", @name="cusid", @id="cusid"})
+            @Html.ValidationMessageFor(model => model.CSId)
+       </div>
+		</div>
+
+        <div class="col-md-12">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.BillNo)
+            @Html.TextBoxFor(model => model.BillNo, new { @class = "form-control", @readonly = "true" })
+            @Html.ValidationMessageFor(model => model.BillNo)
+            @Html.LabelFor(model => model.BillNo , " " )
+         </div>
+		</div>
+
+		
+		 @{
+	var db = new ams.Models.AMSDBContext();
+    var lst = (from s in db.InvoicesDetails.Select(s => s)
+                            .Where(s => s.Invid == Model.InvoiceID)
+                            select new {s}).ToList();            
+        }
+
+        <div class="col-md-12">
+            <table class="table table-bordered" id="table1">
+                <tr class="tbl-header">
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td><input class="form-control" name="_item" id="_item" /></td>
+                    <td>
+                        <input class="form-control" name="_price" id="_price" />
+                    </td>
+					<td>
+                        <input class="form-control" name="_quantity" id="_quantity" />
+                    </td>
+                    <td>
+                        <input class="form-control" readonly="true" name="_total" id="_total" />
+                    </td>
+                    <td><input type="button" id="add" value="Add Row" /></td>
+                    <td></td>
+                </tr>
+                @foreach (var item in lst)
+                {
+                    <tr id="@item.s.Id">
+                        <td><input class="form-control" id="item-@item.s.Id"
+                            value="@item.s.Item" /></td>
+							<td>
+                            <input class="form-control"  id="price-@item.s.Id"
+                                value="@item.s.Price" />
+                        </td>
+                        <td>
+                            <input class="form-control"  id="qty-@item.s.Id"
+                                value="@item.s.Quantity" />
+                        </td>
+                        <td>
+                            <input class="form-control" readonly="true" id="total-@item.s.Id" 
+                                value="@item.s.Total" />
+                        </td>
+                        <td><a href="#" id="saver">Save</a></td>
+                        <td><a href="#" class="redLink" id="deleter">Delete</a></td>
+                    </tr>                    
+                }
+            </table>
+        </div>
+
+        <div class="col-md-12">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.GAmount)
+            @Html.TextBoxFor(model => model.GAmount, new { @class="form-control",@readonly="true", @id="GrossAmt"})
+            @Html.ValidationMessageFor(model => model.GAmount)
+        </div>
+		</div>
+
+         <div class="col-md-12">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Received)
+            @Html.TextBoxFor(model => model.Received, new { @class = "form-control" ,@id="Recev"})
+            @Html.ValidationMessageFor(model => model.Received)
+        </div>
+		</div>
+        
+        <div class="col-md-12">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Balance)
+            @Html.TextBoxFor(model => model.Balance, new { @class = "form-control" , @readonly = "true",@id="Balance"})
+            @Html.ValidationMessageFor(model => model.Balance)
+                        @Html.LabelFor(model => model.Balance," ")
+
+        </div>
+		</div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[id=datex]").datepicker
+            ({
+                dateFormat: "yy/mm/dd",
+                showStatus: true,
+                showWeeks: true,
+                highlightWeek: true,
+                numberOfMonths: 1,
+                showAnim: "slide",
+                showOptions: {
+                    origin: ["top", "left"]
+                }
+            });
+
+            var fkey = $("#fkey").val();
+            var total = parseFloat($("#_total").val());
+            var grand_total = parseFloat($("#GrossAmt").val());
+            var tbl = document.getElementById("table1");
+
+            $("#cusid").val(@Model.CSId);
+            $("input[id=add]").click(function () {
+                if ($.trim($("#_price").val()) != "" && $.trim($("#_quantity").val()) != "") {
+                    var qty = parseFloat($("#_quantity").val()); var pr = parseFloat($("#_price").val());
+                    var amount_ = parseInt(parseInt(qty) * parseFloat(pr));
+                    $("#_total").val(amount_);
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Invoice/adder',
+                        data: {
+                            "fkey": fkey,
+                            "itemName": $("#_item").val(),
+                            "price": $("#_price").val(),
+                            "qty": $("#_quantity").val(),
+                            "total": $("#_total").val()
+                        },
+                        success: function (response) {
+                            //var qty = parseFloat($("#_quantity").val()); var pr = parseFloat($("#_price").val());
+                            //var amount_ = parseInt(parseInt(qty) * parseFloat(pr));
+                            //$("#_total").val(amount_);
+                            grand_total = parseFloat(grand_total + amount_);
+                            $("#GrossAmt").val(grand_total);
+                            var row = document.createElement("tr");
+                            row.innerHTML = '' +
+                                '<td>' +
+                                    '<input class="form-control" id="item-' + response.id + '" value="' + $("#_item").val() + '">' +
+                                '</td>' +
+								'<td>' +
+                                    '<input class="form-control"  id="price-' + response.id + '" value="' + $("#_price").val() + '">' +
+                                '</td>' +
+                                '<td>' +
+                                    '<input class="form-control"  id="qty-' + response.id + '" value="' + $("#_quantity").val() + '">' +
+                                '</td>' +
+                                '<td>' +
+                                    '<input class="form-control"  id="total-' + response.id + '" readonly="true" value="' + $("#_total").val() + '">' +
+                                '</td>' +
+                                '<td><a href="#" id="saver-' + response.id + '">Save</a>' +
+                                '</td>' +
+                            '<td><a href="#" class="redLink" id="deleter-' + response.id + '">Delete</a>' +
+                                '</td>';
+                            row.setAttribute("id", response.id);
+                            row.setAttribute("class", "tbl-input-row");
+                            tbl.appendChild(row);
+                            $("a[id=saver-" + response.id + "]").bind("click", function (e) {
+                                e.preventDefault();
+                                var gpar = this.parentNode;
+                                var par = gpar.parentNode;
+                                var ident = par.getAttribute("id");
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/Invoice/updater',
+                                    data: {
+                                        "id": ident,
+                                        "itemName": $("input[id=item-" + ident + "]").val(),
+                                        "price": $("input[id=price-" + ident + "]").val(),
+                                        "qty": $("input[id=price-" + ident + "]").val(),
+                                        "total": $("input[id=total-" + ident + "]").val()
+                                    },
+                                    success: function (data) {
+                                        alert("Saved");
+                                    },
+                                    error: function (xhr, ajaxOptions, thrownError) {
+                                        alert(xhr.status);
+                                        alert(thrownError);
+                                    }
+                                });
+                            });
+                            $("a[id=deleter-" + response.id + "]").bind("click", function (e) {
+                                e.preventDefault();
+                                var gpar = this.parentNode;
+                                var par = gpar.parentNode;
+                                var ident = par.getAttribute("id");
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/Invoice/remover',
+                                    data: { "id": ident },
+                                    success: function (data) {
+                                        $("tr[id=" + ident + "]").fadeOut();
+                                        $("tr[id=" + ident + "]").html("");
+                                    },
+                                    error: function (xhr, ajaxOptions, thrownError) {
+                                        alert(xhr.status);
+                                        alert(thrownError);
+                                    }
+                                });
+                            });
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr.status);
+                            alert(thrownError);
+                        }
+                    });
+                }
+                else {
+                    alert("Please Provide Required Information!");
+                }
+            });
+
+            $("a[id=saver]").click(function (e) {
+                e.preventDefault();
+                var gpar = this.parentNode;
+                var par = gpar.parentNode;
+                var id = par.getAttribute("id");
+                $.ajax({
+                    type: 'POST',
+                    url: '/Invoice/updater',
+                    data: {
+                        "id": id,
+                        "itemName": $("input[id=item-" + id + "]").val(),
+                        "price": $("input[id=price-" + id + "]").val(),
+                        "qty": $("input[id=price-" + id + "]").val(),
+                        "total": $("input[id=total-" + id + "]").val()
+                    },
+                    success: function (data) {
+                        alert("Saved");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+            $("a[id=deleter]").click(function (e) {
+                e.preventDefault();
+                var gpar = this.parentNode;
+                var par = gpar.parentNode;
+                var id = par.getAttribute("id");
+                $.ajax({
+                    type: 'POST',
+                    url: '/Invoice/remover',
+                    data: { "id": id },
+                    success: function (data) {
+                        $("tr[id=" + id + "]").fadeOut();
+                        $("tr[id=" + id + "]").html("");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+            });
+        });
+    </script>
+}
+

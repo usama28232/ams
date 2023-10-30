@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<style>
+    p {
+        padding-top:5px !important;
+    }
+    .main-text {
+        font-size:18px !important
+    }
+</style>
+
+<div class="col-xs-12" style="padding:0;">
+    <h2>Welcome @ViewBag.User</h2> 
+    <hr class="hr-header" style="margin-bottom:40px;"> 
+                
+    <!-- CHEQUES TODAY -->
+    <div class="col-xs-4">           
+		<a href="~/Ledger/ChequesToday">
+        <div class="panel panel-back noti-box">
+            <span class="icon-box bg-color-red set-icon">
+                <i class="fa fa-credit-card"></i>
+            </span>
+            <div class="text-box" >
+                <p class="main-text">@ViewBag.ChequesToday Cheque (s) </p>
+                <p class="main-text">Today</p>
+            </div>
+        </div>
+        </a>
+	</div>
+
+    <!-- PENDING CHEQUES -->
+    <div class="col-xs-4">           
+		<a href="~/Ledger/PendingCheques">
+		<div class="panel panel-back noti-box">
+            <span class="icon-box bg-color-red set-icon">
+                <i class="fa fa-exclamation"></i>
+            </span>
+            <div class="text-box" >
+                <p class="main-text">@ViewBag.ChequesPending Cheque (s)</p>
+                <p class="main-text">Pending</p>
+            </div>
+        </div>
+        </a>
+	</div>
+</div>

@@ -1,0 +1,114 @@
+﻿@model ams.Models.Ledger
+
+@{
+    ViewBag.Title = "Create Ledger";
+}
+
+<style>
+    .editor-field {
+        margin-bottom:10px;
+    }
+
+</style>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset style="padding-left:10px;">
+        <legend>Ledger</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Date)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Date)
+            @Html.ValidationMessageFor(model => model.Date)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BillNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BillNo)
+            @Html.ValidationMessageFor(model => model.BillNo)
+        </div>
+
+        <div class="editor-field">
+            @Html.HiddenFor(model => model.CustomerId, new { Value = ViewBag.Customerid })
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Particular)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Particular)
+            @Html.ValidationMessageFor(model => model.Particular)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Debit)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Debit, new { @id="txtDebit", @Value="0" })
+            @Html.ValidationMessageFor(model => model.Debit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Credit)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Credit, new { @id="txtCredit", @Value="0" })
+            @Html.ValidationMessageFor(model => model.Credit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.isCheque)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("isCheque", new List<SelectListItem>{
+                new SelectListItem{ Text="No", Value = "0" },
+                new SelectListItem{ Text="Yes", Value = "1" }
+             }) 
+        </div>
+
+@*        <div class="editor-label">
+            @Html.LabelFor(model => model.Balance)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Balance, new { @id="txtBalance", @readonly="readonly", @Value=ViewBag.Balance, @Style="background-color:#eee;"  })
+        </div>
+
+        <div class="editor-label">
+            <strong>Previous Balance</strong>
+        </div>
+        <div class="editor-field">
+             @Html.TextBox("PrevBalance","", new { @id="txtPrevBalance", @type="text", @readonly="true", @Value=ViewBag.Balance, @Style="background-color:#eee;" })
+        </div>*@
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            //$('#txtDebit').change(function () {
+            //    $('#txtCredit').val('0');
+            //    var balance = parseInt($('#txtPrevBalance').val()) - parseInt($('#txtDebit').val());
+            //    $('#txtBalance').val(balance);
+            //});
+
+            //$('#txtCredit').change(function () {
+            //    $('#txtDebit').val('0');
+            //    var balance = parseInt($('#txtPrevBalance').val()) + parseInt($('#txtCredit').val());
+            //    $('#txtBalance').val(balance);
+            //});
+
+        });
+
+    </script>
+}

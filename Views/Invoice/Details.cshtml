@@ -1,0 +1,80 @@
+﻿@model ams.Models.Invoice
+
+@{
+    ViewBag.Title = "Details";
+}
+<h2>Invoice</h2>
+<link href="~/Content/css/Create.css" rel="stylesheet"/>
+
+<fieldset>
+    <div class="col-md-12" style="padding:0px;padding-bottom:10px;" >
+        <div id="col4" class="col-md-4" style="padding:0px">
+            @Html.LabelFor(model => model.CSId,"Customer Name"):
+            @Html.DisplayFor(model => model.Cus.Name)
+            @Html.ValidationMessageFor(model => model.CSId)
+        </div>
+        <div class="col-md-4">
+			@Html.LabelFor(model => model.Date):
+			@Html.DisplayFor(model => model.Date,new {@id="datex" })
+		</div>
+        <div class="col-md-4">
+			@Html.LabelFor(model => model.BillNo):
+			@Html.DisplayFor(model => model.BillNo)
+			@Html.ValidationMessageFor(model => model.BillNo)
+		</div>
+    </div>
+
+
+     @{
+         var db = new ams.Models.AMSDBContext();
+         var lst = (from s in db.InvoicesDetails.Select(s => s)
+                                 .Where(s => s.Invid == Model.InvoiceID)
+                    select new { s }).ToList();                
+        }
+
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered table-hover" id="table1">
+                <tr>
+                    <th style="color:#000;">Item</th>
+                    <th style="color:#000;">Price</th>
+                    <th style="color:#000;">Quantity</th>
+                    <th style="color:#000;">Total</th>
+                </tr>
+                @foreach (var item in lst)
+                {
+                    <tr id="@item.s.Id">
+                        <td><span>@item.s.Item</span></td>
+                        <td class="col-md-2">
+                            <span>@item.s.Price</span>
+                        </td>
+                        <td>
+                            <span>@item.s.Quantity</span>
+                        </td>
+                        <td>
+                            <span>@item.s.Total</span>
+                        </td>
+                    </tr>                    
+                }
+            </table>
+        </div>
+
+
+        <div class="col-md-12" style="padding:0px;padding-bottom:10px;" >
+            <div class="col-md-4">
+				@Html.Label("Gross Amt"):
+				@Html.DisplayFor(model => model.GAmount)
+			</div>
+            <div class="col-md-4">
+				@Html.LabelFor(model => model.Received):
+				@Html.DisplayFor(model => model.Received)
+			</div>
+            <div class="col-md-4">
+				@Html.LabelFor(model => model.Balance):
+				@Html.DisplayFor(model => model.Balance)
+			</div>
+        </div>
+
+</fieldset>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
